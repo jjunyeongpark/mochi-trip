@@ -2,14 +2,14 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build the approved public Japan travel planner with real Google integrations and a 50,000 KRW monthly operating target.
+**Goal:** Build the approved public Japan travel planner with real Google integrations and a 30,000 KRW monthly operating target.
 **Architecture:** Sites Vinext frontend with same-origin API routes. D1 atomic spend reservations and capability-based trip sharing. Missing keys produce explicit demo mode.
 **Tech Stack:** React, TypeScript, Vinext, D1, Google Maps/Places/Routes.
 **Spec:** ../../design.md
 
 ## Global Constraints
 - Korean responsive UI; cute diary visual style; no fabricated live Google data.
-- Monthly estimated API ceiling 40,000 KRW plus 10,000 KRW operating buffer; not a provider billing guarantee.
+- Monthly estimated API ceiling 20,000 KRW plus 10,000 KRW operating buffer; not a provider billing guarantee.
 - User has authorized implementation; execute inline without another approval loop.
 - New isolated Site directory; do not touch existing staged files.
 

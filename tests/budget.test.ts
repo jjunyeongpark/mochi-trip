@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { reserveSpend, API_CAP_KRW } from '../lib/budget.ts';
 function database(){const sqlite=new DatabaseSync(':memory:');sqlite.exec('CREATE TABLE monthly_spend (month TEXT PRIMARY KEY, amount INTEGER NOT NULL)');return {prepare(sql:string){let args:any[]=[];return {bind(...v:any[]){args=v;return this;},async first(){return sqlite.prepare(sql).get(...args)??null;}};}};}
+test('30,000 KRW operating target reserves 20,000 KRW for Google API usage',()=>{
+ assert.equal(API_CAP_KRW,20000);
+});
 test('atomic reservation blocks concurrent spending beyond monthly limit',async()=>{
  const db=database();
  const results=await Promise.all(Array.from({length:500},()=>reserveSpend(db as any,'search',1,new Date('2026-12-01T01:00:00Z'))));

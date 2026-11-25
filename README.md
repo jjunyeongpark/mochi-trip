@@ -7,7 +7,7 @@
 
 - 여행 조건 입력, 날짜별 일정, 순서/체류시간 변경, 장소 추가/삭제, 찜, 기기 저장, 30일 공유 링크
 - 실제 Google 지도·Places 검색·구간 Routes API 통합 (환경변수 설정 후 활성화)
-- 월 40,000원 API 예약장부 + 10,000원 기타 비용 여유. 실제 청구 한도 보장은 아닙니다.
+- 월 20,000원 API 예약장부 + 10,000원 기타 비용 여유. 실제 청구 한도 보장은 아닙니다.
 - [Google 연결·비용 설정 안내](docs/google-setup.md), [설계](docs/design.md), [검증 기록](docs/progress.md)
 
 검증은 `pnpm test`, `pnpm exec tsc --noEmit`, `pnpm build`입니다. 개발은 `pnpm dev`입니다. 로컬 키는 추적되지 않는 `.dev.vars`로 설정하고 이름은 `.env.example`을 참고합니다. 서버 비밀 키를 브라우저나 Git에 공개하지 마세요.

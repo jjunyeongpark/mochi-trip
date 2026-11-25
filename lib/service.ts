@@ -1,5 +1,5 @@
 import { googleReady, searchPlaces, placeDetails, fetchRoute, type GoogleEnv } from './google.ts';
-import { reserveSpend, monthKey } from './budget.ts';
+import { reserveSpend, monthKey, MONTHLY_BUDGET_KRW, API_CAP_KRW } from './budget.ts';
 import { validateSettings, validatePoint, buildDays, type Place, type RouteLeg } from './travel.ts';
 type Env=GoogleEnv&{DB?:D1Database};
 class ApiError extends Error{status:number;constructor(message:string,status=400){super(message);this.status=status;}}
@@ -10,7 +10,7 @@ async function spend(env:Env,kind:'search'|'details'|'route'|'map',units=1){if(!
 export async function handleApi(request:Request,env:Env):Promise<Response>{
  try{
  const path=new URL(request.url).pathname.replace(/\/$/,'');
- if(path==='/api/config'&&request.method==='GET')return json({live:googleReady(env)&&Boolean(env.DB),budget:50000,apiBudget:40000,mode:googleReady(env)?'live':'sample'});
+ if(path==='/api/config'&&request.method==='GET')return json({live:googleReady(env)&&Boolean(env.DB),budget:MONTHLY_BUDGET_KRW,apiBudget:API_CAP_KRW,mode:googleReady(env)?'live':'sample'});
  if(request.method==='POST'){const origin=request.headers.get('origin');if(origin&&origin!==new URL(request.url).origin)throw new ApiError('허용되지 않은 요청입니다.',403);}
  if(request.method==='GET'&&path.startsWith('/api/share/')){
   const id=path.split('/').at(-1)!;if(!/^[a-f0-9]{32}$/.test(id))throw new ApiError('공유 주소를 확인해주세요.',404);
