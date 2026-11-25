@@ -8,3 +8,14 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 .hours-note{font-size:11px;color:#a3947b;margin-top:5px;line-height:1.7}
+/* Keep decorative artwork inside the responsive hero, including tablet widths. */
+.hero{overflow:clip}
+button,input,select{scroll-margin-block:115px}
+@media(max-width:600px){
+ .builder-field input,.builder-field select,.form-grid input,.form-grid select,.search-form input{font-size:16px}
+ .mini-btn{width:36px;height:36px}
+ .map-controls button{width:42px;height:42px}
+ .day-tabs button{min-height:48px}
+ .modal-close{width:44px;height:44px;right:12px;top:10px}
+ .builder-options{min-height:44px}
+}
