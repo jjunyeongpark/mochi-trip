@@ -1,10 +1,10 @@
-# 모찌트립 구글맵 연결 안내
+# 포근트립 구글맵 연결 안내
 
 현재 상태: Google Cloud 프로젝트/결제 계정이 없어 유료 기능은 비활성화되어 있습니다. 지도는 명시된 일러스트, 장소는 예시입니다. 키를 연결하기 전에는 Google API 요금이 발생하지 않습니다. 실제 API 통합 코드는 구현했지만 실제 키로 일본 전역 응답을 검증하지 않았습니다.
 
 ## 1. Google Cloud 준비
 
-1. [Google Cloud Console](https://console.cloud.google.com/)에서 모찌트립 전용 프로젝트를 만듭니다.
+1. [Google Cloud Console](https://console.cloud.google.com/)에서 포근트립 전용 프로젝트를 만듭니다.
 2. 결제 계정을 연결합니다. 무료 할당량이 있더라도 운영 시 결제 계정이 필요합니다.
 3. **Maps JavaScript API**, **Places API (New)**, **Routes API**만 활성화합니다.
 4. 키 두 개를 만듭니다. 키를 저장소/GitHub/채팅/스크린샷에 올리지 마세요.

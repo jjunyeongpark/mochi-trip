@@ -1,5 +1,5 @@
 export default function Mochi({className='',variant='travel'}:{className?:string;variant?:'travel'|'small'}){
- return <svg className={className} viewBox="0 0 260 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="여행 가방을 든 모찌 캐릭터">
+ return <svg className={className} viewBox="0 0 260 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="여행 가방을 든 포근트립 캐릭터">
  <ellipse cx="134" cy="219" rx="80" ry="10" fill="#CCD8BA" opacity=".35"/>
  <path d="M68 143C45 135 34 147 41 161C48 172 63 169 74 159" fill="#FFF9ED" stroke="#665647" strokeWidth="3.5"/>
  <path d="M192 141C213 126 226 139 218 153L199 169" fill="#FFF9ED" stroke="#665647" strokeWidth="3.5"/>
