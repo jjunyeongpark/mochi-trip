@@ -1,6 +1,6 @@
 export type PlacePhotoData={name:string;authors:{name:string;uri?:string}[]};
 export type Place = {id:string;name:string;lat:number;lng:number;category:string;source:'google'|'sample';address?:string;rating?:number;reviewCount?:number;mapsUri?:string;price?:string;photo?:PlacePhotoData;types?:string[];checkedAt?:string;hours?:{open:{day:number;hour:number;minute:number};close?:{day:number;hour:number;minute:number}}[];attributions?:{displayName:string;uri?:string}[]};
-export type Settings = {city:string;startDate:string;nights:number;pace:'slow'|'normal'|'busy';budget:'low'|'normal'|'high';interests:string[];transport:'WALK'|'TRANSIT'|'DRIVE';companion:string;hotel:string;hotelId?:string;};
+export type Settings = {city:string;startDate:string;nights:number;pace:'slow'|'normal'|'busy';budget:'low'|'normal'|'high';interests:string[];transport:'WALK'|'TRANSIT'|'DRIVE';companion:string;hotel:string;hotelId?:string;startTime?:string;};
 export type Stop = {place:Place;time:string;minutes:number};
 export type Day = {date:string;stops:Stop[]};
 export type RouteLeg = {from:string;to:string;duration:number;distance:number;polyline?:string;status:'ok'|'unavailable';departure?:string;summary?:string};
@@ -13,7 +13,8 @@ export function validateSettings(input:unknown):Settings {
  if(!Array.isArray(s.interests)||s.interests.length>6||s.interests.some(x=>typeof x!=='string'||x.length>20))throw Error('관심사를 확인해주세요.');
  if(typeof s.hotel!=='string'||s.hotel.length>150||typeof s.companion!=='string'||s.companion.length>20)throw Error('숙소와 동행인 정보를 확인해주세요.');
  if(s.hotelId!==undefined&&(typeof s.hotelId!=='string'||!/^[\w-]{5,250}$/.test(s.hotelId)))throw Error('선택한 숙소를 확인해주세요.');
- return {city:s.city.trim(),startDate:s.startDate,nights:s.nights,pace:s.pace,budget:s.budget,interests:s.interests,transport:s.transport,companion:s.companion,hotel:s.hotel.trim(),...(s.hotelId?{hotelId:s.hotelId}:{})};
+ if(s.startTime!==undefined&&(typeof s.startTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(s.startTime)))throw Error('출발 시간을 확인해주세요.');
+ return {city:s.city.trim(),startDate:s.startDate,nights:s.nights,pace:s.pace,budget:s.budget,interests:s.interests,transport:s.transport,companion:s.companion,hotel:s.hotel.trim(),startTime:s.startTime||'09:30',...(s.hotelId?{hotelId:s.hotelId}:{})};
 }
 export function distance(a:{lat:number;lng:number},b:{lat:number;lng:number}){const r=Math.PI/180;const x=(b.lng-a.lng)*r*Math.cos((a.lat+b.lat)*r/2);return 6371*Math.sqrt(x*x+((b.lat-a.lat)*r)**2);}
 export function openAt(place:Pick<Place,'hours'>,date:string,start:number,duration:number):boolean|undefined{
@@ -26,7 +27,7 @@ export function buildDays(places:Place[],settings:Settings,origin?:Place):Day[]{
  const slots=settings.pace==='slow'?['명소','맛집','카페']:settings.pace==='busy'?['명소','명소','맛집','카페','명소','맛집']:['명소','맛집','명소','카페','맛집'];
  return Array.from({length:settings.nights+1},(_,dayIndex)=>{
   const date=new Date(`${settings.startDate}T00:00:00Z`);date.setUTCDate(date.getUTCDate()+dayIndex);const dateStr=date.toISOString().slice(0,10);
-  let last=origin;let clock=9*60+30;let meals=0;const stops:Stop[]=[];
+  let last=origin;let clock=settings.startTime?Number(settings.startTime.slice(0,2))*60+Number(settings.startTime.slice(3)):570;let meals=0;const stops:Stop[]=[];
   for(const slot of slots){
    if(slot==='맛집')clock=Math.max(clock,meals?18*60:12*60);
    const minutes=slot==='명소'?75:slot==='맛집'?60:45;

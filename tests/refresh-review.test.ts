@@ -1,0 +1,9 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import * as planner from '../lib/planner.ts';
+import {DEFAULT_SETTINGS} from '../lib/demo.ts';
+import {validateSettings,sharePayload,type Place} from '../lib/travel.ts';
+test('changing destination clears the previous city hotel but selecting the same city preserves it',()=>{const fn=(planner as any).patchTripSettings;assert.equal(typeof fn,'function');const old={...DEFAULT_SETTINGS,hotel:'Tokyo hotel',hotelId:'tokyo-hotel-id'};assert.equal(fn(old,'city','나하').hotelId,undefined);assert.equal(fn(old,'city','나하').hotel,'');assert.equal(fn(old,'city','도쿄').hotelId,'tokyo-hotel-id');});
+test('all-days route refresh covers every displayed date after changing mode or start time',()=>{const fn=(planner as any).visibleDayIndices;assert.equal(typeof fn,'function');assert.deepEqual(fn(true,1,4),[0,1,2,3]);assert.deepEqual(fn(false,2,4),[2]);});
+test('departure time survives validated save/share roundtrips and old trips use 09:30',()=>{const checked=validateSettings({...DEFAULT_SETTINGS,startTime:'08:15'});assert.equal((checked as any).startTime,'08:15');assert.equal((sharePayload(checked,[]).settings as any).startTime,'08:15');assert.equal((validateSettings(DEFAULT_SETTINGS) as any).startTime,'09:30');assert.throws(()=>validateSettings({...DEFAULT_SETTINGS,startTime:'25:30'}));});
+test('legacy hotel references upgrade to ID-only persistence while display uses fresh details',()=>{const fn=(planner as any).restoredTripSettings;assert.equal(typeof fn,'function');const origin:Place={id:'legacy-hotel-id',name:'fresh provider name',lat:35,lng:139,category:'숙소',source:'google'};const restored=fn(DEFAULT_SETTINGS,origin);assert.equal(restored.hotelId,origin.id);assert.equal(restored.hotel,origin.name);assert.equal(sharePayload(restored,[]).settings.hotel,'');});

@@ -1,6 +1,9 @@
-import {distance,type Day,type Place,type RouteLeg} from './travel.ts';
+import {distance,type Day,type Place,type RouteLeg,type Settings} from './travel.ts';
 export const DAY_COLORS=['#718b60','#cf826b','#9981b0','#5d96a7','#c29b47','#b67394','#598a81'];
 export const dayColor=(day:number)=>DAY_COLORS[day%DAY_COLORS.length];
+export function patchTripSettings<K extends keyof Settings>(settings:Settings,key:K,value:Settings[K]):Settings{return {...settings,[key]:value,...(key==='hotel'||key==='city'&&value!==settings.city?{hotelId:undefined}:{}),...(key==='city'&&value!==settings.city?{hotel:''}:{})};}
+export function visibleDayIndices(all:boolean,current:number,count:number){return all?Array.from({length:count},(_,i)=>i):[current];}
+export function restoredTripSettings(settings:Settings,origin?:Place):Settings{return origin?{...settings,hotel:origin.name,hotelId:origin.id}:settings;}
 export function routePoints(day:Day,origin?:Place):Place[]{const stops=day.stops.map(s=>s.place);return origin&&stops.length?[origin,...stops,origin]:stops;}
 export function routeSignature(day:Day,origin:Place|undefined,mode:string,start:string){return JSON.stringify({date:day.date,mode,start,points:routePoints(day,origin).map(p=>[p.id,p.lat,p.lng]),stays:day.stops.map(s=>s.minutes)});}
 export function validStartTime(value:string){return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);}
