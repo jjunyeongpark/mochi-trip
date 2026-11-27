@@ -2,13 +2,13 @@
 import {useEffect,useRef,useState} from 'react';
 import {LoaderCircle,X} from 'lucide-react';
 import {shouldShowWelcome,WELCOME_SESSION_KEY} from '../lib/feedback';
-import AnimatedMascot from './AnimatedMascot';
+import AnimatedMascot from './NativeMascot';
 
 type Scene='welcome'|'loading'|'complete';
 const content={
- welcome:{title:'반가워요, 여행자님',description:'포근한 일본 여행을 함께 시작해요.',animation:'hello.gif',still:'smile.png',action:'여행 시작하기'},
- loading:{title:'설레는 여행을 준비해요',description:'명소와 맛집을 모아, 나만의 하루를 만들고 있어요.',animation:'hello.gif',still:'walking.png',action:'일정 화면 보기'},
- complete:{title:'우리의 여행이 준비됐어요',description:'마음에 드는 곳을 더하며, 나답게 완성해보세요.',animation:'bye.gif',still:'smile.png',action:'일정 보러 가기'},
+ welcome:{title:'반가워요, 여행자님',description:'포근한 일본 여행을 함께 시작해요.',animation:'pogeun-hello.webp',still:'smile.png',action:'여행 시작하기'},
+ loading:{title:'설레는 여행을 준비해요',description:'명소와 맛집을 모아, 나만의 하루를 만들고 있어요.',animation:'pogeun-hello.webp',still:'walking.png',action:'일정 화면 보기'},
+ complete:{title:'우리의 여행이 준비됐어요',description:'마음에 드는 곳을 더하며, 나답게 완성해보세요.',animation:'pogeun-bye.webp',still:'smile.png',action:'일정 보러 가기'},
 };
 
 export default function JourneyFeedback({creating,completed}:{creating:boolean;completed:number}){

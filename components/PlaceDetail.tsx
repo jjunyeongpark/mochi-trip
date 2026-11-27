@@ -1,0 +1,8 @@
+'use client';
+import {Heart,Plus,BedDouble,ExternalLink} from 'lucide-react';
+import type {Place} from '../lib/travel';
+import {mapsUrl} from '../lib/travel';
+import PlacePhoto,{PhotoCredits} from './PlacePhoto';
+export default function PlaceDetail({place,onAdd,onFavorite,onHotel,favorite}:{place:Place;onAdd:(p:Place)=>void;onFavorite:(p:Place)=>void;onHotel:(p:Place)=>void;favorite:boolean}){
+ return <div className="place-detail"><span className="section-kicker">A PLACE FOR YOUR JOURNEY</span><h2 id="modal-title">{place.name}</h2><PlacePhoto place={place} large/><PhotoCredits place={place}/><div className="detail-meta"><span>{place.category}</span>{place.source==='google'&&<span translate="no">Google Maps</span>}{place.rating!==undefined?<span>★ {place.rating} · 리뷰 {place.reviewCount??'미확인'}개</span>:<span>평점 미확인</span>}</div><p className="detail-address">{place.address||'주소 정보가 없습니다.'}</p><p className="small-notice">{place.source==='sample'?'체험용 장소입니다. 가게·사진·영업시간 추천 정보가 아닙니다.':'가격·영업시간·임시휴무·예약 가능 여부는 방문 전에 재확인해주세요.'}</p><div className="detail-actions">{place.category==='숙소'?<button className="primary-btn" onClick={()=>onHotel(place)}><BedDouble size={17}/>이 숙소에서 출발하기</button>:<button className="primary-btn" onClick={()=>onAdd(place)}><Plus size={17}/>오늘 일정에 추가</button>}<button className={favorite?'outline-btn hearted':'outline-btn'} onClick={()=>onFavorite(place)}><Heart size={17}/>{favorite?'찜한 장소':'찜하기'}</button></div><a className="detail-external" href={mapsUrl(place)} target="_blank" rel="noreferrer">Google Maps에서 자세히 보기 <ExternalLink size={14}/></a>{place.attributions?.map(a=><p className="provider-attribution" key={a.displayName}>{a.uri?<a href={a.uri} target="_blank" rel="noreferrer">{a.displayName}</a>:a.displayName}</p>)}</div>;
+}

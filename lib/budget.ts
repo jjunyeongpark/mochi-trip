@@ -1,6 +1,6 @@
 export const MONTHLY_BUDGET_KRW=30000;
 export const API_CAP_KRW=20000;
-export const UNIT_KRW={search:100,details:60,route:25,map:25} as const;
+export const UNIT_KRW={search:100,details:60,route:25,map:25,photo:25} as const;
 export type DbLike={prepare:(sql:string)=>{bind:(...args:any[])=>{first:()=>Promise<any>}}};
 export function monthKey(date=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit'}).format(date).replace('/','-');}
 export async function reserveSpend(db:DbLike,kind:keyof typeof UNIT_KRW,units=1,date=new Date()){

@@ -1,5 +1,6 @@
-export type Place = {id:string;name:string;lat:number;lng:number;category:string;source:'google'|'sample';address?:string;rating?:number;reviewCount?:number;mapsUri?:string;price?:string;types?:string[];checkedAt?:string;hours?:{open:{day:number;hour:number;minute:number};close?:{day:number;hour:number;minute:number}}[];attributions?:{displayName:string;uri?:string}[]};
-export type Settings = {city:string;startDate:string;nights:number;pace:'slow'|'normal'|'busy';budget:'low'|'normal'|'high';interests:string[];transport:'WALK'|'TRANSIT'|'DRIVE';companion:string;hotel:string;};
+export type PlacePhotoData={name:string;authors:{name:string;uri?:string}[]};
+export type Place = {id:string;name:string;lat:number;lng:number;category:string;source:'google'|'sample';address?:string;rating?:number;reviewCount?:number;mapsUri?:string;price?:string;photo?:PlacePhotoData;types?:string[];checkedAt?:string;hours?:{open:{day:number;hour:number;minute:number};close?:{day:number;hour:number;minute:number}}[];attributions?:{displayName:string;uri?:string}[]};
+export type Settings = {city:string;startDate:string;nights:number;pace:'slow'|'normal'|'busy';budget:'low'|'normal'|'high';interests:string[];transport:'WALK'|'TRANSIT'|'DRIVE';companion:string;hotel:string;hotelId?:string;};
 export type Stop = {place:Place;time:string;minutes:number};
 export type Day = {date:string;stops:Stop[]};
 export type RouteLeg = {from:string;to:string;duration:number;distance:number;polyline?:string;status:'ok'|'unavailable';departure?:string;summary?:string};
@@ -11,7 +12,8 @@ export function validateSettings(input:unknown):Settings {
  if(!['slow','normal','busy'].includes(s.pace)||!['low','normal','high'].includes(s.budget)||!['WALK','TRANSIT','DRIVE'].includes(s.transport))throw Error('여행 옵션을 확인해주세요.');
  if(!Array.isArray(s.interests)||s.interests.length>6||s.interests.some(x=>typeof x!=='string'||x.length>20))throw Error('관심사를 확인해주세요.');
  if(typeof s.hotel!=='string'||s.hotel.length>150||typeof s.companion!=='string'||s.companion.length>20)throw Error('숙소와 동행인 정보를 확인해주세요.');
- return {...s,city:s.city.trim(),hotel:s.hotel.trim()};
+ if(s.hotelId!==undefined&&(typeof s.hotelId!=='string'||!/^[\w-]{5,250}$/.test(s.hotelId)))throw Error('선택한 숙소를 확인해주세요.');
+ return {city:s.city.trim(),startDate:s.startDate,nights:s.nights,pace:s.pace,budget:s.budget,interests:s.interests,transport:s.transport,companion:s.companion,hotel:s.hotel.trim(),...(s.hotelId?{hotelId:s.hotelId}:{})};
 }
 export function distance(a:{lat:number;lng:number},b:{lat:number;lng:number}){const r=Math.PI/180;const x=(b.lng-a.lng)*r*Math.cos((a.lat+b.lat)*r/2);return 6371*Math.sqrt(x*x+((b.lat-a.lat)*r)**2);}
 export function openAt(place:Pick<Place,'hours'>,date:string,start:number,duration:number):boolean|undefined{
@@ -41,5 +43,5 @@ export function buildDays(places:Place[],settings:Settings,origin?:Place):Day[]{
 export function mapsUrl(place:Place){const u=new URL('https://www.google.com/maps/search/');u.searchParams.set('api','1');u.searchParams.set('query',place.name);if(place.source==='google')u.searchParams.set('query_place_id',place.id);return u.toString();}
 export function directionsUrl(places:Place[],mode:string){const u=new URL('https://www.google.com/maps/dir/');u.searchParams.set('api','1');if(!places.length)return 'https://www.google.com/maps';u.searchParams.set('origin',`${places[0].lat},${places[0].lng}`);u.searchParams.set('destination',`${places.at(-1)!.lat},${places.at(-1)!.lng}`);u.searchParams.set('travelmode',mode==='TRANSIT'?'transit':mode==='DRIVE'?'driving':'walking');if(places.length>2&&mode!=='TRANSIT')u.searchParams.set('waypoints',places.slice(1,-1).map(p=>`${p.lat},${p.lng}`).join('|'));return u.toString();}
 export function decodePolyline(encoded:string){const points:{lat:number;lng:number}[]=[];let index=0,lat=0,lng=0;while(index<encoded.length){const read=()=>{let result=0,shift=0,b:number;do{if(index>=encoded.length||shift>30)throw Error('Invalid polyline');b=encoded.charCodeAt(index++)-63;if(b<0||b>63)throw Error('Invalid polyline');result|=(b&31)<<shift;shift+=5;}while(b>=32);return result&1?~(result>>1):result>>1;};lat+=read();lng+=read();points.push({lat:lat/1e5,lng:lng/1e5});}return points;}
-export function sharePayload(settings:Settings,days:Day[]){return {settings,days:days.map(d=>({date:d.date,stops:d.stops.map(s=>({id:s.place.id,source:s.place.source,time:s.time,minutes:s.minutes}))}))};}
+export function sharePayload(settings:Settings,days:Day[]){return {settings:settings.hotelId?{...settings,hotel:''}:settings,days:days.map(d=>({date:d.date,stops:d.stops.map(s=>({id:s.place.id,source:s.place.source,time:s.time,minutes:s.minutes}))}))};}
 export function validatePoint(p:unknown){const v=p as {lat:number;lng:number;id:string};if(!v||!Number.isFinite(v.lat)||!Number.isFinite(v.lng)||v.lat<20||v.lat>46.5||v.lng<122||v.lng>154||typeof v.id!=='string'||v.id.length>250)throw Error('일본 내 장소를 선택해주세요.');return v;}

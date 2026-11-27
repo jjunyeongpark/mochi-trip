@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./refresh.css";
+import "./experience.css";
 
 export const metadata: Metadata = {
   title: "포근트립 · 설레는 일본 여행의 시작",
